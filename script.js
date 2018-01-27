@@ -1,26 +1,49 @@
 let canvas = document.getElementById('canvas')
 let ctx = canvas.getContext('2d')
 
-let x = 0
-let y = canvas.height
+let timeDelta = 0
+const targetFPS = 60
+const targetFrameDuration = (1000 / targetFPS)
 
 const mass = 1
-const accelerationRate = 9.81
+const acceleration = 9.81
 
 
-
-async function draw() {
-    const startTime = Date.now()
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.beginPath();
-    ctx.arc(x, y, 20, 0, 2 * Math.PI)
-    ctx.closePath();
-
-    y += 1
-
-    ctx.stroke()
-
-    const deltaTime =  Date.now() - startTime 
-    await (1000 / 60) - deltaTime
-    draw()
+function RainDrop (x = 0, y = 0) {
+    this.x = x
+    this.y = y
+    this.fallTime = 0
+    this.render = function () {
+        ctx.arc(this.x, this.y, 50, 0, 2 * Math.PI)
+    }
 }
+
+const rainDrop = new RainDrop(350, 0)
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.beginPath()
+    
+    rainDrop.fallTime += timeDelta
+    
+    const distanceDelta = acceleration * Math.pow(rainDrop.fallTime / 1000, 2) / 2
+    rainDrop.y += distanceDelta
+
+    rainDrop.render()
+
+    ctx.closePath()
+    ctx.stroke()
+}
+
+function loop() {
+    const startTime = Date.now()
+    draw()
+    const renderTime = Date.now() - startTime
+    timeDelta = renderTime < targetFrameDuration ? targetFrameDuration : renderTime
+    this.setTimeout(() => {
+        loop()
+    }, targetFrameDuration - renderTime)
+}
+
+
+loop()
