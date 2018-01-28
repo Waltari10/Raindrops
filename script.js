@@ -8,7 +8,7 @@ const targetFPS = 60
 const targetFrameDuration = (1000 / targetFPS)
 
 global.ctx = canvas.getContext('2d')
-global.timeDelta = 0
+global.timeDelta = 1000 / targetFPS
 global.gameObjects = [new RainSpawner()]
 
 
@@ -44,7 +44,7 @@ function updateGameObjects () {
 
 function updateGravity () {
     for (let i = 0; i < gameObjects.length; i++) {
-        if (gameObjects[i].gravity) {
+        if (gameObjects[i].isGravity) {
             gameObjects[i].updateGravity()
         }
     }
