@@ -3,10 +3,10 @@ const GameObject = require('./GameObject')
 const RainDrop = require('./RainDrop')
 const RainSpawner = require('./RainSpawner')
 
-let canvas = document.getElementById('canvas')
 const targetFPS = 60
 const targetFrameDuration = (1000 / targetFPS)
 
+global.canvas = document.getElementById('canvas')
 global.ctx = canvas.getContext('2d')
 global.timeDelta = 1000 / targetFPS
 global.gameObjects = [new RainSpawner()]
