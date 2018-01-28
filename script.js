@@ -7,7 +7,6 @@ let timeDelta = 0
 const targetFPS = 60
 const targetFrameDuration = (1000 / targetFPS)
 
-const mass = 1
 const acceleration = 9.81
 
 function getDistance(time) {
@@ -19,6 +18,7 @@ function getVelocity(time, initialVelocity = 0) {
 }
 
 function RainDrop(x = 0, y = 0) {
+    this.name = 'RainDrop'
     this.x = x
     this.y = y
     this.fallTime = 0
@@ -28,22 +28,35 @@ function RainDrop(x = 0, y = 0) {
         this.y += this.velocity
     }
     this.render = function () {
-        ctx.arc(this.x, this.y, 50, 0, 2 * Math.PI)
+        ctx.arc(this.x, this.y, 2, 0, 2 * Math.PI)
     }
 }
 
-const rainDrop = new RainDrop(350, 0)
 
-const gameObjects = [rainDrop]
+function RainSpawner() {
+    this.name = 'RainSpawner'
+    this.rainDrops = []
+    this.update = function update() {
+        const rainDrop = new RainDrop(_.random(0, canvas.width), 0)
+        this.rainDrops.push(rainDrop)
+        gameObjects.push(rainDrop)
+    }
+    this.render = function () {}
+}
+
+
+const gameObjects = [new RainSpawner()]
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.beginPath()
 
-    rainDrop.render()
+     for (let i = 0; i < gameObjects.length; i++) {
+         ctx.beginPath()
+         gameObjects[i].render()
+         ctx.closePath()
+         ctx.stroke()
+     }
 
-    ctx.closePath()
-    ctx.stroke()
 }
 
 function loop() {
