@@ -10,6 +10,11 @@ const targetFrameDuration = (1000 / targetFPS)
 global.ctx = canvas.getContext('2d')
 global.timeDelta = 1000 / targetFPS
 global.gameObjects = [new RainSpawner()]
+global.instantiate = function (classTemplate, args) {
+    const instance = new classTemplate(args)
+    gameObjects.push(instance)
+    return instance
+}
 
 
 

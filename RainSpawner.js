@@ -7,14 +7,13 @@ module.exports = class RainSpawner extends GameObject {
         this.rainDrops = []
     }
     update() {
-        const rainDrop1 = new RainDrop({ 
+        const rainDrop = instantiate(RainDrop, { 
             x: _.random(0, canvas.width), 
             y: -100, 
             drag: 1, 
             isGravity: true,
             mass: 0.1
         })
-        this.rainDrops.push(rainDrop1)
-        gameObjects.push(rainDrop1)
+        this.rainDrops.push(rainDrop)
     }
 }
