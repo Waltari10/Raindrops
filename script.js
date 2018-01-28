@@ -2,6 +2,7 @@ const _ = require('lodash')
 const GameObject = require('./GameObject')
 const RainDrop = require('./RainDrop')
 const RainSpawner = require('./RainSpawner')
+const uniqid = require('uniqid')
 
 const targetFPS = 60
 const targetFrameDuration = (1000 / targetFPS)
@@ -9,21 +10,25 @@ const targetFrameDuration = (1000 / targetFPS)
 global.canvas = document.getElementById('canvas')
 global.ctx = canvas.getContext('2d')
 global.timeDelta = 1000 / targetFPS
-global.gameObjects = [new RainSpawner()]
+global.gameObjects = {}
 global.instantiate = function (classTemplate, args) {
-    const instance = new classTemplate(args)
-    gameObjects.push(instance)
+    const id = uniqid()
+    const instance = new classTemplate(Object.assign({ id }, args))
+    gameObjects[id] = instance
     return instance
 }
+global.destroy = function (instance) {
+    delete gameObjects[instance.id]
+}
 
-
+instantiate(RainSpawner)
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.beginPath()
-     for (let i = 0; i < gameObjects.length; i++) {
-         ctx.moveTo(gameObjects[i].x, gameObjects[i].y)
-         gameObjects[i].render()
+    for (const key in gameObjects) {
+         ctx.moveTo(gameObjects[key].x, gameObjects[key].y)
+         gameObjects[key].render()
      }
      ctx.closePath()
      ctx.stroke()
@@ -42,15 +47,15 @@ function loop() {
 }
 
 function updateGameObjects () {
-    for (let i = 0; i < gameObjects.length; i++) {
-        gameObjects[i].update()
+    for (const key in gameObjects) {
+        gameObjects[key].update()
     }
 }
 
 function updateGravity () {
-    for (let i = 0; i < gameObjects.length; i++) {
-        if (gameObjects[i].isGravity) {
-            gameObjects[i].updateGravity()
+    for (const key in gameObjects) {
+        if (gameObjects[key].isGravity) {
+            gameObjects[key].updateGravity()
         }
     }
 }

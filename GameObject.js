@@ -1,7 +1,20 @@
-const { getVelocity, getForce, getDrag } = require('./Physics')
+const {
+    getVelocity,
+    getForce,
+    getDrag
+} = require('./Physics')
 
 module.exports = class GameObject {
-    constructor({ x = 0, y = 0, velocity = 0, name = '', mass = 1, drag = 1, isGravity = false } = {}) {
+    constructor({
+        id,
+        x = 0,
+        y = 0,
+        velocity = 0,
+        name = '',
+        mass = 1,
+        drag = 1,
+        isGravity = false
+    } = {}) {
         this.name = name
         this.x = x
         this.y = y
@@ -9,9 +22,10 @@ module.exports = class GameObject {
         this.mass = mass
         this.drag = drag
         this.isGravity = isGravity
+        this.id = id
     }
-    render() { }
-    update() { }
+    render() {}
+    update() {}
     updateGravity() {
 
         const velocity = getVelocity((timeDelta / 1000), this.velocity)
@@ -26,7 +40,7 @@ module.exports = class GameObject {
         } else {
             acceleration = 0
         }
-        
+
         const draggedVelocity = acceleration * (timeDelta / 1000)
 
         this.velocity += draggedVelocity
