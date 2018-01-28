@@ -1,15 +1,61 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+const { getVelocity } = require('./Physics')
+
 module.exports = class GameObject {
-    constructor({ x = 0, y = 0, velocity = 0, name = '' } = {}) {
+    constructor({ x = 0, y = 0, velocity = 0, name = '', mass = 1, drag = 1, gravity = false } = {}) {
         this.name = name
         this.x = x
         this.y = y
         this.velocity = velocity
+        this.mass = mass
+        this.drag = drag
+        this.gravity = gravity
     }
     render() { }
     update() { }
+    updateGravity() {
+        this.velocity = getVelocity((timeDelta / 1000), this.velocity)
+        this.y += this.velocity * this.drag
+    }
 }
-},{}],2:[function(require,module,exports){
+},{"./Physics":2}],2:[function(require,module,exports){
+const acceleration = 9.81
+
+module.exports = {
+    getDistance: function (time) {
+        return acceleration * Math.pow(time / 1000, 2) / 2
+    },
+    getVelocity: function (time, initialVelocity = 0) {
+        return initialVelocity + (acceleration * time)
+    },
+    getForce: function (weight, acceleration) {
+        return mass * acceleration
+    },
+}
+},{}],3:[function(require,module,exports){
+const GameObject = require('./GameObject')
+
+module.exports = class RainDrop extends GameObject {
+    render() {
+        ctx.arc(this.x, this.y, 2, 0, 2 * Math.PI)
+    }
+}
+},{"./GameObject":1}],4:[function(require,module,exports){
+const GameObject = require('./GameObject')
+const RainDrop = require('./RainDrop')
+
+module.exports = class RainSpawner extends GameObject {
+    constructor(args) {
+        super(args)
+        this.rainDrops = []
+    }
+    update() {
+        const rainDrop1 = new RainDrop({ x: _.random(0, canvas.width), y: -100, drag: 1, gravity: true })
+        this.rainDrops.push(rainDrop1)
+        gameObjects.push(rainDrop1)
+    }
+}
+},{"./GameObject":1,"./RainDrop":3}],5:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -17097,53 +17143,22 @@ module.exports = class GameObject {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],3:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+(function (global){
 const _ = require('lodash')
 const GameObject = require('./GameObject')
+const RainDrop = require('./RainDrop')
+const RainSpawner = require('./RainSpawner')
 
 let canvas = document.getElementById('canvas')
-let ctx = canvas.getContext('2d')
-
-let timeDelta = 0
 const targetFPS = 60
 const targetFrameDuration = (1000 / targetFPS)
 
-const acceleration = 9.81
+global.ctx = canvas.getContext('2d')
+global.timeDelta = 0
+global.gameObjects = [new RainSpawner()]
 
-function getDistance(time) {
-    return acceleration * Math.pow(time / 1000, 2) / 2
-}
 
-function getVelocity(time, initialVelocity = 0) {
-    return initialVelocity + (acceleration * time)
-}
-
-class RainDrop extends GameObject {
-    render() {
-        ctx.arc(this.x, this.y, 2, 0, 2 * Math.PI)
-    }
-    update() {
-        this.velocity = getVelocity((timeDelta / 1000), this.velocity)
-        this.y += this.velocity
-    }
-}
-
-class RainSpawner extends GameObject {
-    constructor(args){
-        super(args)
-        this.rainDrops = []
-    }
-    update() {
-        const rainDrop1 = new RainDrop({ x: _.random(0, canvas.width), y: -100 })
-        const rainDrop2 = new RainDrop({ x: _.random(0, canvas.width), y: -100 })
-        this.rainDrops.push(rainDrop1)
-        gameObjects.push(rainDrop1)
-        this.rainDrops.push(rainDrop2)
-        gameObjects.push(rainDrop2)
-    }
-}
-
-const gameObjects = [new RainSpawner()]
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -17158,6 +17173,7 @@ function draw() {
 
 function loop() {
     const startTime = Date.now()
+    updateGravity()
     updateGameObjects()
     draw()
     const renderTime = Date.now() - startTime
@@ -17167,12 +17183,21 @@ function loop() {
     }, targetFrameDuration - renderTime)
 }
 
-function updateGameObjects (){
+function updateGameObjects () {
     for (let i = 0; i < gameObjects.length; i++) {
         gameObjects[i].update()
     }
 }
 
+function updateGravity () {
+    for (let i = 0; i < gameObjects.length; i++) {
+        if (gameObjects[i].gravity) {
+            gameObjects[i].updateGravity()
+        }
+    }
+}
+
 
 loop()
-},{"./GameObject":1,"lodash":2}]},{},[3]);
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./GameObject":1,"./RainDrop":3,"./RainSpawner":4,"lodash":5}]},{},[6]);

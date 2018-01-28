@@ -2,16 +2,16 @@ const _ = require('lodash')
 const GameObject = require('./GameObject')
 const RainDrop = require('./RainDrop')
 const RainSpawner = require('./RainSpawner')
-const { getVelocity } = require('./Physics')
 
 let canvas = document.getElementById('canvas')
-let ctx = canvas.getContext('2d')
-
-let timeDelta = 0
 const targetFPS = 60
 const targetFrameDuration = (1000 / targetFPS)
 
-const gameObjects = [new RainSpawner()]
+global.ctx = canvas.getContext('2d')
+global.timeDelta = 0
+global.gameObjects = [new RainSpawner()]
+
+
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
