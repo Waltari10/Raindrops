@@ -17,36 +17,41 @@ function getVelocity(time, initialVelocity = 0) {
     return initialVelocity + (acceleration * time)
 }
 
-function RainDrop(x = 0, y = 0) {
-    this.name = 'RainDrop'
-    this.x = x
-    this.y = y
-    this.fallTime = 0
-    this.velocity = 0
-    this.update = function update(){
+class GameObject {
+    constructor({ x = 0, y = 0, velocity = 0, name = '' } = {}) {
+        this.name = name
+        this.x = x
+        this.y = y
+        this.velocity = velocity
+    }
+    render() {}
+    update() {}
+}
+
+class RainDrop extends GameObject {
+    render() {
+        ctx.arc(this.x, this.y, 2, 0, 2 * Math.PI)
+    }
+    update() {
         this.velocity = getVelocity((timeDelta / 1000), this.velocity)
         this.y += this.velocity
     }
-    this.render = function () {
-        ctx.arc(this.x, this.y, 2, 0, 2 * Math.PI)
-    }
 }
 
-
-function RainSpawner() {
-    this.name = 'RainSpawner'
-    this.rainDrops = []
-    this.update = function update() {
-        const rainDrop1 = new RainDrop(_.random(0, canvas.width), -100)
-        const rainDrop2 = new RainDrop(_.random(0, canvas.width), -100)
+class RainSpawner extends GameObject {
+    constructor(args){
+        super(args)
+        this.rainDrops = []
+    }
+    update() {
+        const rainDrop1 = new RainDrop({ x: _.random(0, canvas.width), y: -100 })
+        const rainDrop2 = new RainDrop({ x: _.random(0, canvas.width), y: -100 })
         this.rainDrops.push(rainDrop1)
         gameObjects.push(rainDrop1)
         this.rainDrops.push(rainDrop2)
         gameObjects.push(rainDrop2)
     }
-    this.render = function () {}
 }
-
 
 const gameObjects = [new RainSpawner()]
 
