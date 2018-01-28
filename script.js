@@ -1,3 +1,5 @@
+// Lodash imported as _
+
 let canvas = document.getElementById('canvas')
 let ctx = canvas.getContext('2d')
 
@@ -8,14 +10,21 @@ const targetFrameDuration = (1000 / targetFPS)
 const mass = 1
 const acceleration = 9.81
 
+function getDistance(time) {
+    return acceleration * Math.pow(time / 1000, 2) / 2
+}
+
+function getVelocity(time, initialVelocity = 0) {
+    return initialVelocity + (acceleration * time)
+}
+
 function RainDrop(x = 0, y = 0) {
     this.x = x
     this.y = y
     this.fallTime = 0
     this.velocity = 0
     this.update = function update(){
-        this.fallTime += timeDelta
-        this.velocity = acceleration * Math.pow(this.fallTime / 1000, 2) / 2
+        this.velocity = getVelocity((timeDelta / 1000), this.velocity)
         this.y += this.velocity
     }
     this.render = function () {
