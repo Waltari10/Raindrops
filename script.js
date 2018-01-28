@@ -37,9 +37,12 @@ function RainSpawner() {
     this.name = 'RainSpawner'
     this.rainDrops = []
     this.update = function update() {
-        const rainDrop = new RainDrop(_.random(0, canvas.width), 0)
-        this.rainDrops.push(rainDrop)
-        gameObjects.push(rainDrop)
+        const rainDrop1 = new RainDrop(_.random(0, canvas.width), -100)
+        const rainDrop2 = new RainDrop(_.random(0, canvas.width), -100)
+        this.rainDrops.push(rainDrop1)
+        gameObjects.push(rainDrop1)
+        this.rainDrops.push(rainDrop2)
+        gameObjects.push(rainDrop2)
     }
     this.render = function () {}
 }
@@ -49,14 +52,13 @@ const gameObjects = [new RainSpawner()]
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-
+    ctx.beginPath()
      for (let i = 0; i < gameObjects.length; i++) {
-         ctx.beginPath()
+         ctx.moveTo(gameObjects[i].x, gameObjects[i].y)
          gameObjects[i].render()
-         ctx.closePath()
-         ctx.stroke()
      }
-
+     ctx.closePath()
+     ctx.stroke()
 }
 
 function loop() {
