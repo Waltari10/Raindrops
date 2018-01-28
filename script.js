@@ -1,5 +1,8 @@
 const _ = require('lodash')
 const GameObject = require('./GameObject')
+const RainDrop = require('./RainDrop')
+const RainSpawner = require('./RainSpawner')
+const { getVelocity } = require('./Physics')
 
 let canvas = document.getElementById('canvas')
 let ctx = canvas.getContext('2d')
@@ -7,41 +10,6 @@ let ctx = canvas.getContext('2d')
 let timeDelta = 0
 const targetFPS = 60
 const targetFrameDuration = (1000 / targetFPS)
-
-const acceleration = 9.81
-
-function getDistance(time) {
-    return acceleration * Math.pow(time / 1000, 2) / 2
-}
-
-function getVelocity(time, initialVelocity = 0) {
-    return initialVelocity + (acceleration * time)
-}
-
-class RainDrop extends GameObject {
-    render() {
-        ctx.arc(this.x, this.y, 2, 0, 2 * Math.PI)
-    }
-    update() {
-        this.velocity = getVelocity((timeDelta / 1000), this.velocity)
-        this.y += this.velocity
-    }
-}
-
-class RainSpawner extends GameObject {
-    constructor(args){
-        super(args)
-        this.rainDrops = []
-    }
-    update() {
-        const rainDrop1 = new RainDrop({ x: _.random(0, canvas.width), y: -100 })
-        const rainDrop2 = new RainDrop({ x: _.random(0, canvas.width), y: -100 })
-        this.rainDrops.push(rainDrop1)
-        gameObjects.push(rainDrop1)
-        this.rainDrops.push(rainDrop2)
-        gameObjects.push(rainDrop2)
-    }
-}
 
 const gameObjects = [new RainSpawner()]
 
@@ -58,6 +26,7 @@ function draw() {
 
 function loop() {
     const startTime = Date.now()
+    updateGravity()
     updateGameObjects()
     draw()
     const renderTime = Date.now() - startTime
@@ -67,9 +36,17 @@ function loop() {
     }, targetFrameDuration - renderTime)
 }
 
-function updateGameObjects (){
+function updateGameObjects () {
     for (let i = 0; i < gameObjects.length; i++) {
         gameObjects[i].update()
+    }
+}
+
+function updateGravity () {
+    for (let i = 0; i < gameObjects.length; i++) {
+        if (gameObjects[i].gravity) {
+            gameObjects[i].updateGravity()
+        }
     }
 }
 
