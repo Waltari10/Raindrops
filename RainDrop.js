@@ -13,13 +13,12 @@ module.exports = class RainDrop extends GameObject {
         }
     }
     goSplat() {
-        // instantiate(
-        //     Particle, {
-        //         x: this.x,
-        //         y: this.y
-        //     }
-        // )
+        instantiate(
+            Particle, {
+                x: this.x,
+                y: this.y
+            }
+        )
         destroy(this)
-        // TODO destroy self and spawn 3 fragments in random directions
     }
 }

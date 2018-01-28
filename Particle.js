@@ -7,11 +7,11 @@ module.exports = class Particle extends GameObject {
     }
     render() {
         ctx.strokeStyle = 'blue'
-        ctx.arc(this.x, this.y, 0.5, 0, 2 * Math.PI, false)
+        ctx.arc(this.x, this.y, 2, 0, 2 * Math.PI, false)
     }
     update() {
-        if (this.spawnedAt - 5000 < Date.now()) {
-            // Destroy self
+        if (this.spawnedAt + 120 < Date.now()) {
+            destroy(this)
         }
     }
 }

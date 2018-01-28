@@ -58,11 +58,11 @@ module.exports = class Particle extends GameObject {
     }
     render() {
         ctx.strokeStyle = 'blue'
-        ctx.arc(this.x, this.y, 0.5, 0, 2 * Math.PI, false)
+        ctx.arc(this.x, this.y, 2, 0, 2 * Math.PI, false)
     }
     update() {
-        if (this.spawnedAt - 5000 < Date.now()) {
-            // Destroy self
+        if (this.spawnedAt + 120 < Date.now()) {
+            destroy(this)
         }
     }
 }
@@ -103,14 +103,13 @@ module.exports = class RainDrop extends GameObject {
         }
     }
     goSplat() {
-        // instantiate(
-        //     Particle, {
-        //         x: this.x,
-        //         y: this.y
-        //     }
-        // )
+        instantiate(
+            Particle, {
+                x: this.x,
+                y: this.y
+            }
+        )
         destroy(this)
-        // TODO destroy self and spawn 3 fragments in random directions
     }
 }
 },{"./GameObject":1,"./Particle":2}],5:[function(require,module,exports){
