@@ -1,4 +1,5 @@
-// Lodash imported as _
+const _ = require('lodash')
+const GameObject = require('./GameObject')
 
 let canvas = document.getElementById('canvas')
 let ctx = canvas.getContext('2d')
@@ -15,17 +16,6 @@ function getDistance(time) {
 
 function getVelocity(time, initialVelocity = 0) {
     return initialVelocity + (acceleration * time)
-}
-
-class GameObject {
-    constructor({ x = 0, y = 0, velocity = 0, name = '' } = {}) {
-        this.name = name
-        this.x = x
-        this.y = y
-        this.velocity = velocity
-    }
-    render() {}
-    update() {}
 }
 
 class RainDrop extends GameObject {
