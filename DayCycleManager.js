@@ -1,6 +1,6 @@
 const GameObject = require('./GameObject')
 
-const pathRadius = 400
+const pathRadius = 500
 
 module.exports = class DayCycleManager extends GameObject {
   constructor(props) {
