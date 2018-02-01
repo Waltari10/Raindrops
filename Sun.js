@@ -11,8 +11,6 @@ module.exports = class Sun extends GameObject {
     ctx.fill();
   }
   update() {
-    // this.x = 100
-    // this.y = 100
     this.x = getXOnCircle(pathRadius, Math.PI + (Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2))), canvas.width / 2)
     this.y = getYOnCircle(pathRadius, Math.PI + (Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2))), canvas.height)
   }

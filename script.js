@@ -14,6 +14,7 @@ global.canvas = document.getElementById('canvas')
 global.ctx = canvas.getContext('2d')
 global.timeDelta = 1000 / targetFPS
 global.gameObjects = {}
+global.dayCycleManager = instantiate(DayCycleManager)
 global.instantiate = function (classTemplate, args) {
   const id = uniqid()
   const instance = new classTemplate(Object.assign({
@@ -29,7 +30,6 @@ global.destroy = function (instance) {
 instantiate(RainSpawner)
 instantiate(Moon)
 instantiate(Sun)
-global.dayCycleManager = instantiate(DayCycleManager)
 
 
 function draw() {

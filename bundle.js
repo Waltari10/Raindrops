@@ -192,8 +192,6 @@ module.exports = class Sun extends GameObject {
     ctx.fill();
   }
   update() {
-    // this.x = 100
-    // this.y = 100
     this.x = getXOnCircle(pathRadius, Math.PI + (Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2))), canvas.width / 2)
     this.y = getYOnCircle(pathRadius, Math.PI + (Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2))), canvas.height)
   }
@@ -17547,6 +17545,7 @@ global.canvas = document.getElementById('canvas')
 global.ctx = canvas.getContext('2d')
 global.timeDelta = 1000 / targetFPS
 global.gameObjects = {}
+global.dayCycleManager = instantiate(DayCycleManager)
 global.instantiate = function (classTemplate, args) {
   const id = uniqid()
   const instance = new classTemplate(Object.assign({
@@ -17562,7 +17561,6 @@ global.destroy = function (instance) {
 instantiate(RainSpawner)
 instantiate(Moon)
 instantiate(Sun)
-global.dayCycleManager = instantiate(DayCycleManager)
 
 
 function draw() {
