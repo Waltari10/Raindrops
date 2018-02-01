@@ -1,8 +1,6 @@
 const GameObject = require('./GameObject')
 const { getXOnCircle, getYOnCircle } = require('./Physics')
 
-const pathRadius = 400
-
 module.exports = class Moon extends GameObject {
   render() {
     ctx.strokeStyle = 'grey'
@@ -11,7 +9,7 @@ module.exports = class Moon extends GameObject {
     ctx.fill();
   }
   update() {
-    this.x = getXOnCircle(pathRadius, Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2)), canvas.width / 2)
-    this.y = getYOnCircle(pathRadius, Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2)), canvas.height)
+    this.x = getXOnCircle(dayCycleManager.pathRadius, Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2)), canvas.width / 2)
+    this.y = getYOnCircle(dayCycleManager.pathRadius, Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2)), canvas.height)
   }
 }
