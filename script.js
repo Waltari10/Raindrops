@@ -12,52 +12,53 @@ global.ctx = canvas.getContext('2d')
 global.timeDelta = 1000 / targetFPS
 global.gameObjects = {}
 global.instantiate = function (classTemplate, args) {
-    const id = uniqid()
-    const instance = new classTemplate(Object.assign({ id }, args))
-    gameObjects[id] = instance
-    return instance
+  const id = uniqid()
+  const instance = new classTemplate(Object.assign({
+    id
+  }, args))
+  gameObjects[id] = instance
+  return instance
 }
 global.destroy = function (instance) {
-    delete gameObjects[instance.id]
+  delete gameObjects[instance.id]
 }
 
 instantiate(RainSpawner)
 
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  for (const key in gameObjects) {
     ctx.beginPath()
-    for (const key in gameObjects) {
-         ctx.moveTo(gameObjects[key].x, gameObjects[key].y)
-         gameObjects[key].render()
-     }
-     ctx.closePath()
-     ctx.stroke()
+    ctx.moveTo(gameObjects[key].x, gameObjects[key].y)
+    gameObjects[key].render()
+    ctx.stroke()
+  }
 }
 
 function loop() {
-    const startTime = Date.now()
-    updateGravity()
-    updateGameObjects()
-    draw()
-    const renderTime = Date.now() - startTime
-    timeDelta = renderTime < targetFrameDuration ? targetFrameDuration : renderTime
-    this.setTimeout(() => {
-        loop()
-    }, targetFrameDuration - renderTime)
+  const startTime = Date.now()
+  updateGravity()
+  updateGameObjects()
+  draw()
+  const renderTime = Date.now() - startTime
+  timeDelta = renderTime < targetFrameDuration ? targetFrameDuration : renderTime
+  this.setTimeout(() => {
+    loop()
+  }, targetFrameDuration - renderTime)
 }
 
-function updateGameObjects () {
-    for (const key in gameObjects) {
-        gameObjects[key].update()
-    }
+function updateGameObjects() {
+  for (const key in gameObjects) {
+    gameObjects[key].update()
+  }
 }
 
-function updateGravity () {
-    for (const key in gameObjects) {
-        if (gameObjects[key].isGravity) {
-            gameObjects[key].updateGravity()
-        }
+function updateGravity() {
+  for (const key in gameObjects) {
+    if (gameObjects[key].isGravity) {
+      gameObjects[key].updateGravity()
     }
+  }
 }
 
 
