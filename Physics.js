@@ -16,5 +16,11 @@ module.exports = {
   },
   getDrag: function (velocity) { // drag returns force in newton
     return 0.5 * airDensity * Math.pow(velocity, 2) * crossSectionalArea * streamlinedBodyCoefficient
+  },
+  getXOnCircle: function (radius, radian, x) {
+    return radius * Math.cos(radian) + x
+  },
+  getYOnCircle: function (radius, radian, y) {
+    return radius * Math.sin(radian) + y
   }
 }

@@ -3,6 +3,9 @@ const GameObject = require('./GameObject')
 const RainDrop = require('./RainDrop')
 const RainSpawner = require('./RainSpawner')
 const uniqid = require('uniqid')
+const Moon = require('./Moon')
+const DayCycleManager = require('./DayCycleManager')
+const Sun = require('./Sun')
 
 const targetFPS = 60
 const targetFrameDuration = (1000 / targetFPS)
@@ -24,10 +27,15 @@ global.destroy = function (instance) {
 }
 
 instantiate(RainSpawner)
+instantiate(Moon)
+instantiate(Sun)
+global.dayCycleManager = instantiate(DayCycleManager)
+
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   for (const key in gameObjects) {
+    ctx.lineWidth = 1
     ctx.beginPath()
     ctx.moveTo(gameObjects[key].x, gameObjects[key].y)
     gameObjects[key].render()

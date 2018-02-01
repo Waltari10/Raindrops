@@ -1,4 +1,21 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+const GameObject = require('./GameObject')
+
+const pathRadius = 400
+
+module.exports = class DayCycleManager extends GameObject {
+  constructor(props) {
+    super(props)
+    this.time = 0
+    this.msInDay = 5000
+  }
+  update() {
+    this.time += timeDelta
+    if (this.time > this.msInDay) this.time = 0
+  }
+}
+
+},{"./GameObject":2}],2:[function(require,module,exports){
 const {
   getVelocity,
   getForce,
@@ -48,7 +65,26 @@ module.exports = class GameObject {
     this.y += this.velocity
   }
 }
-},{"./Physics":3}],2:[function(require,module,exports){
+},{"./Physics":5}],3:[function(require,module,exports){
+const GameObject = require('./GameObject')
+const { getXOnCircle, getYOnCircle } = require('./Physics')
+
+const pathRadius = 400
+
+module.exports = class Moon extends GameObject {
+  render() {
+    ctx.strokeStyle = 'grey'
+    ctx.arc(this.x, this.y, 40, 0, 2 * Math.PI, false)
+    ctx.fillStyle = 'grey';
+    ctx.fill();
+  }
+  update() {
+    this.x = getXOnCircle(pathRadius, Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2)), canvas.width / 2)
+    this.y = getYOnCircle(pathRadius, Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2)), canvas.height)
+  }
+}
+
+},{"./GameObject":2,"./Physics":5}],4:[function(require,module,exports){
 const GameObject = require('./GameObject')
 
 module.exports = class Particle extends GameObject {
@@ -67,7 +103,7 @@ module.exports = class Particle extends GameObject {
     }
   }
 }
-},{"./GameObject":1}],3:[function(require,module,exports){
+},{"./GameObject":2}],5:[function(require,module,exports){
 const defaultAcceleration = 9.81
 const airDensity = 1.225 // kg/m3
 const circleDragCoefficient = 0.47
@@ -86,9 +122,15 @@ module.exports = {
   },
   getDrag: function (velocity) { // drag returns force in newton
     return 0.5 * airDensity * Math.pow(velocity, 2) * crossSectionalArea * streamlinedBodyCoefficient
+  },
+  getXOnCircle: function (radius, radian, x) {
+    return radius * Math.cos(radian) + x
+  },
+  getYOnCircle: function (radius, radian, y) {
+    return radius * Math.sin(radian) + y
   }
 }
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 const GameObject = require('./GameObject')
 const Particle = require('./Particle')
 
@@ -114,7 +156,7 @@ module.exports = class RainDrop extends GameObject {
     destroy(this)
   }
 }
-},{"./GameObject":1,"./Particle":2}],5:[function(require,module,exports){
+},{"./GameObject":2,"./Particle":4}],7:[function(require,module,exports){
 const GameObject = require('./GameObject')
 const RainDrop = require('./RainDrop')
 
@@ -136,7 +178,28 @@ module.exports = class RainSpawner extends GameObject {
 
   }
 }
-},{"./GameObject":1,"./RainDrop":4}],6:[function(require,module,exports){
+},{"./GameObject":2,"./RainDrop":6}],8:[function(require,module,exports){
+const GameObject = require('./GameObject')
+const { getXOnCircle, getYOnCircle } = require('./Physics')
+
+const pathRadius = 400
+
+module.exports = class Sun extends GameObject {
+  render() {
+    ctx.strokeStyle = 'orange'
+    ctx.arc(this.x, this.y, 40, 0, 2 * Math.PI, false)
+    ctx.fillStyle = 'orange';
+    ctx.fill();
+  }
+  update() {
+    // this.x = 100
+    // this.y = 100
+    this.x = getXOnCircle(pathRadius, Math.PI + (Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2))), canvas.width / 2)
+    this.y = getYOnCircle(pathRadius, Math.PI + (Math.PI * (dayCycleManager.time / (dayCycleManager.msInDay / 2))), canvas.height)
+  }
+}
+
+},{"./GameObject":2,"./Physics":5}],9:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -17224,7 +17287,7 @@ module.exports = class RainSpawner extends GameObject {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (global){
 var os = require('os');
 
@@ -17364,7 +17427,7 @@ lib.all = function (callback) {
 module.exports = lib;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./lib/linux.js":8,"./lib/unix.js":9,"./lib/windows.js":10,"os":14}],8:[function(require,module,exports){
+},{"./lib/linux.js":11,"./lib/unix.js":12,"./lib/windows.js":13,"os":17}],11:[function(require,module,exports){
 var exec = require('child_process').exec;
 
 module.exports = function (iface, callback) {
@@ -17377,7 +17440,7 @@ module.exports = function (iface, callback) {
     });
 };
 
-},{"child_process":13}],9:[function(require,module,exports){
+},{"child_process":16}],12:[function(require,module,exports){
 var exec = require('child_process').exec;
 
 module.exports = function (iface, callback) {
@@ -17395,7 +17458,7 @@ module.exports = function (iface, callback) {
     });
 };
 
-},{"child_process":13}],10:[function(require,module,exports){
+},{"child_process":16}],13:[function(require,module,exports){
 var exec = require('child_process').exec;
 
 var regexRegex = /[-\/\\^$*+?.()|[\]{}]/g;
@@ -17425,7 +17488,7 @@ module.exports = function (iface, callback) {
     });
 };
 
-},{"child_process":13}],11:[function(require,module,exports){
+},{"child_process":16}],14:[function(require,module,exports){
 (function (process){
 /* 
 (The MIT License)
@@ -17466,13 +17529,16 @@ function macHandler(error){
 }
 
 }).call(this,require('_process'))
-},{"_process":15,"macaddress":7}],12:[function(require,module,exports){
+},{"_process":18,"macaddress":10}],15:[function(require,module,exports){
 (function (global){
 const _ = require('lodash')
 const GameObject = require('./GameObject')
 const RainDrop = require('./RainDrop')
 const RainSpawner = require('./RainSpawner')
 const uniqid = require('uniqid')
+const Moon = require('./Moon')
+const DayCycleManager = require('./DayCycleManager')
+const Sun = require('./Sun')
 
 const targetFPS = 60
 const targetFrameDuration = (1000 / targetFPS)
@@ -17494,10 +17560,15 @@ global.destroy = function (instance) {
 }
 
 instantiate(RainSpawner)
+instantiate(Moon)
+instantiate(Sun)
+global.dayCycleManager = instantiate(DayCycleManager)
+
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   for (const key in gameObjects) {
+    ctx.lineWidth = 1
     ctx.beginPath()
     ctx.moveTo(gameObjects[key].x, gameObjects[key].y)
     gameObjects[key].render()
@@ -17534,9 +17605,9 @@ function updateGravity() {
 
 loop()
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./GameObject":1,"./RainDrop":4,"./RainSpawner":5,"lodash":6,"uniqid":11}],13:[function(require,module,exports){
+},{"./DayCycleManager":1,"./GameObject":2,"./Moon":3,"./RainDrop":6,"./RainSpawner":7,"./Sun":8,"lodash":9,"uniqid":14}],16:[function(require,module,exports){
 
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -17587,7 +17658,7 @@ exports.homedir = function () {
 	return '/'
 };
 
-},{}],15:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -17773,4 +17844,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[12]);
+},{}]},{},[15]);
