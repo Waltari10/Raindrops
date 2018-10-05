@@ -4,7 +4,7 @@ module.exports = class DayCycleManager extends GameObject {
   constructor(props) {
     super(props)
     this.time = 0
-    this.msInDay = 5000
+    this.msInDay = 480000
     this.pathRadius = 500
   }
   update() {

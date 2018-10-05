@@ -1,11 +1,11 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const GameObject = require('./GameObject')
 
 module.exports = class DayCycleManager extends GameObject {
   constructor(props) {
     super(props)
     this.time = 0
-    this.msInDay = 5000
+    this.msInDay = 480000
     this.pathRadius = 500
   }
   update() {
@@ -193,6 +193,8 @@ module.exports = class Sun extends GameObject {
 }
 
 },{"./GameObject":2,"./Physics":5}],9:[function(require,module,exports){
+
+},{}],10:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -17280,7 +17282,7 @@ module.exports = class Sun extends GameObject {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function (global){
 var os = require('os');
 
@@ -17420,7 +17422,7 @@ lib.all = function (callback) {
 module.exports = lib;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./lib/linux.js":11,"./lib/unix.js":12,"./lib/windows.js":13,"os":17}],11:[function(require,module,exports){
+},{"./lib/linux.js":12,"./lib/unix.js":13,"./lib/windows.js":14,"os":15}],12:[function(require,module,exports){
 var exec = require('child_process').exec;
 
 module.exports = function (iface, callback) {
@@ -17433,7 +17435,7 @@ module.exports = function (iface, callback) {
     });
 };
 
-},{"child_process":16}],12:[function(require,module,exports){
+},{"child_process":9}],13:[function(require,module,exports){
 var exec = require('child_process').exec;
 
 module.exports = function (iface, callback) {
@@ -17451,7 +17453,7 @@ module.exports = function (iface, callback) {
     });
 };
 
-},{"child_process":16}],13:[function(require,module,exports){
+},{"child_process":9}],14:[function(require,module,exports){
 var exec = require('child_process').exec;
 
 var regexRegex = /[-\/\\^$*+?.()|[\]{}]/g;
@@ -17481,126 +17483,7 @@ module.exports = function (iface, callback) {
     });
 };
 
-},{"child_process":16}],14:[function(require,module,exports){
-(function (process){
-/* 
-(The MIT License)
-Copyright (c) 2014 Halász Ádám <mail@adamhalasz.com>
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-//  Unique Hexatridecimal ID Generator
-// ================================================
-
-//  Dependencies
-// ================================================
-var pid = process && process.pid ? process.pid.toString(36) : '' ;
-var mac = typeof __webpack_require__ !== 'function' ? require('macaddress').one(macHandler) : null ;
-var address = mac ? parseInt(mac.replace(/\:|\D+/gi, '')).toString(36) : '' ;
-
-//  Exports
-// ================================================
-module.exports         = function(prefix){ return (prefix || '') + address + pid + now().toString(36); }
-module.exports.process = function(prefix){ return (prefix || '')           + pid + now().toString(36); }
-module.exports.time    = function(prefix){ return (prefix || '')                 + now().toString(36); }
-
-//  Helpers
-// ================================================
-function now(){
-    var time = Date.now();
-    var last = now.last || time;
-    return now.last = time > last ? time : last + 1;
-}
-
-function macHandler(error){
-    if(module.parent && module.parent.uniqid_debug){
-        if(error) console.error('Info: No mac address - uniqid() falls back to uniqid.process().', error)
-        if(pid == '') console.error('Info: No process.pid - uniqid.process() falls back to uniqid.time().')
-    }
-}
-
-}).call(this,require('_process'))
-},{"_process":18,"macaddress":10}],15:[function(require,module,exports){
-(function (global){
-const _ = require('lodash')
-const GameObject = require('./GameObject')
-const RainDrop = require('./RainDrop')
-const RainSpawner = require('./RainSpawner')
-const uniqid = require('uniqid')
-const Moon = require('./Moon')
-const DayCycleManager = require('./DayCycleManager')
-const Sun = require('./Sun')
-
-const targetFPS = 60
-const targetFrameDuration = (1000 / targetFPS)
-
-global.canvas = document.getElementById('canvas')
-global.ctx = canvas.getContext('2d')
-global.timeDelta = 1000 / targetFPS
-global.gameObjects = {}
-global.instantiate = function (classTemplate, args) {
-  const id = uniqid()
-  const instance = new classTemplate(Object.assign({
-    id
-  }, args))
-  gameObjects[id] = instance
-  return instance
-}
-global.destroy = function (instance) {
-  delete gameObjects[instance.id]
-}
-
-global.dayCycleManager = instantiate(DayCycleManager) 
-instantiate(RainSpawner)
-instantiate(Moon)
-instantiate(Sun)
-
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-  for (const key in gameObjects) {
-    ctx.lineWidth = 1
-    ctx.beginPath()
-    ctx.moveTo(gameObjects[key].x, gameObjects[key].y)
-    gameObjects[key].render()
-    ctx.stroke()
-  }
-}
-
-function loop() {
-  const startTime = Date.now()
-  updateGravity()
-  updateGameObjects()
-  draw()
-  const renderTime = Date.now() - startTime
-  timeDelta = renderTime < targetFrameDuration ? targetFrameDuration : renderTime
-  this.setTimeout(() => {
-    loop()
-  }, targetFrameDuration - renderTime)
-}
-
-function updateGameObjects() {
-  for (const key in gameObjects) {
-    gameObjects[key].update()
-  }
-}
-
-function updateGravity() {
-  for (const key in gameObjects) {
-    if (gameObjects[key].isGravity) {
-      gameObjects[key].updateGravity()
-    }
-  }
-}
-
-
-loop()
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./DayCycleManager":1,"./GameObject":2,"./Moon":3,"./RainDrop":6,"./RainSpawner":7,"./Sun":8,"lodash":9,"uniqid":14}],16:[function(require,module,exports){
-
-},{}],17:[function(require,module,exports){
+},{"child_process":9}],15:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -17651,7 +17534,7 @@ exports.homedir = function () {
 	return '/'
 };
 
-},{}],18:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -17837,4 +17720,121 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[15]);
+},{}],17:[function(require,module,exports){
+(function (process){
+/* 
+(The MIT License)
+Copyright (c) 2014 Halász Ádám <mail@adamhalasz.com>
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+//  Unique Hexatridecimal ID Generator
+// ================================================
+
+//  Dependencies
+// ================================================
+var pid = process && process.pid ? process.pid.toString(36) : '' ;
+var mac = typeof __webpack_require__ !== 'function' ? require('macaddress').one(macHandler) : null ;
+var address = mac ? parseInt(mac.replace(/\:|\D+/gi, '')).toString(36) : '' ;
+
+//  Exports
+// ================================================
+module.exports         = function(prefix){ return (prefix || '') + address + pid + now().toString(36); }
+module.exports.process = function(prefix){ return (prefix || '')           + pid + now().toString(36); }
+module.exports.time    = function(prefix){ return (prefix || '')                 + now().toString(36); }
+
+//  Helpers
+// ================================================
+function now(){
+    var time = Date.now();
+    var last = now.last || time;
+    return now.last = time > last ? time : last + 1;
+}
+
+function macHandler(error){
+    if(module.parent && module.parent.uniqid_debug){
+        if(error) console.error('Info: No mac address - uniqid() falls back to uniqid.process().', error)
+        if(pid == '') console.error('Info: No process.pid - uniqid.process() falls back to uniqid.time().')
+    }
+}
+
+}).call(this,require('_process'))
+},{"_process":16,"macaddress":11}],18:[function(require,module,exports){
+(function (global){
+const _ = require('lodash')
+const GameObject = require('./GameObject')
+const RainDrop = require('./RainDrop')
+const RainSpawner = require('./RainSpawner')
+const uniqid = require('uniqid')
+const Moon = require('./Moon')
+const DayCycleManager = require('./DayCycleManager')
+const Sun = require('./Sun')
+
+const targetFPS = 60
+const targetFrameDuration = (1000 / targetFPS)
+
+global.canvas = document.getElementById('canvas')
+global.ctx = canvas.getContext('2d')
+global.timeDelta = 1000 / targetFPS
+global.gameObjects = {}
+global.instantiate = function (classTemplate, args) {
+  const id = uniqid()
+  const instance = new classTemplate(Object.assign({
+    id
+  }, args))
+  gameObjects[id] = instance
+  return instance
+}
+global.destroy = function (instance) {
+  delete gameObjects[instance.id]
+}
+
+global.dayCycleManager = instantiate(DayCycleManager) 
+instantiate(RainSpawner)
+instantiate(Moon)
+instantiate(Sun)
+
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  for (const key in gameObjects) {
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(gameObjects[key].x, gameObjects[key].y)
+    gameObjects[key].render()
+    ctx.stroke()
+  }
+}
+
+function loop() {
+  const startTime = Date.now()
+  updateGravity()
+  updateGameObjects()
+  draw()
+  const renderTime = Date.now() - startTime
+  timeDelta = renderTime < targetFrameDuration ? targetFrameDuration : renderTime
+  this.setTimeout(() => {
+    loop()
+  }, targetFrameDuration - renderTime)
+}
+
+function updateGameObjects() {
+  for (const key in gameObjects) {
+    gameObjects[key].update()
+  }
+}
+
+function updateGravity() {
+  for (const key in gameObjects) {
+    if (gameObjects[key].isGravity) {
+      gameObjects[key].updateGravity()
+    }
+  }
+}
+
+
+loop()
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./DayCycleManager":1,"./GameObject":2,"./Moon":3,"./RainDrop":6,"./RainSpawner":7,"./Sun":8,"lodash":10,"uniqid":17}]},{},[18]);
